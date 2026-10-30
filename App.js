@@ -125,12 +125,25 @@ export default function App() {
                 STEP 2: give them visual feedback with the style function (pressed).
                 STEP 3: make the Follow button toggle between 'Follow' and 'Following'. */}
           <View style={styles.actions}>
-            <Pressable style={[styles.button, styles.buttonPrimary]} onPress={handleFollowPress}>
+            <Pressable
+              style={({ pressed }) => [
+                styles.button,
+                styles.buttonPrimary,
+                pressed && styles.pressed,
+              ]}
+              onPress={handleFollowPress}
+            >
               <Text style={[styles.buttonText, styles.buttonTextPrimary]}>
                 Follow
               </Text>
             </Pressable>
-            <Pressable style={styles.button} onPress={handleMessagePress}>
+            <Pressable
+              style={({ pressed }) => [
+                styles.button,
+                pressed && styles.pressed,
+              ]}
+              onPress={handleMessagePress}
+            >
               <Text style={styles.buttonText}>Message</Text>
             </Pressable>
           </View>
@@ -138,8 +151,12 @@ export default function App() {
           {/* TODO STEP 4: when 'Message' is pressed, show a composer here (TextInput + counter + Send) */}
 
           {/* TODO STEP 1: add a 'Share profile' Button (core component) here */}
-          <View>
-            <Button title='Share profile' color={COLORS.primary} onPress={handleSharePress}></Button>
+          <View style={styles.shareWrapper}>
+            <Button
+              title='Share profile'
+              color={COLORS.primary}
+              onPress={handleSharePress}
+            ></Button>
           </View>
         </View>
       </View>
@@ -301,6 +318,72 @@ const styles = StyleSheet.create({
     color: COLORS.primary,
   },
   buttonTextPrimary: {
+    color: '#FFFFFF',
+  },
+  buttonFollowing: {
+    backgroundColor: COLORS.primaryLight,
+  },
+  composer: {
+    marginTop: 16,
+  },
+  composerFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  counter: {
+    fontSize: 12,
+    color: COLORS.muted,
+  },
+  hint: {
+    marginTop: 8,
+    fontSize: 12,
+    color: COLORS.muted,
+  },
+  input: {
+    height: 44,
+    paddingHorizontal: 12,
+    fontSize: 15,
+    color: COLORS.text,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    borderRadius: 12,
+  },
+  link: {
+    marginTop: 4,
+    fontSize: 14,
+    fontWeight: '600',
+    color: COLORS.primary,
+  },
+  offlineBadge: {
+    backgroundColor: COLORS.offline,
+  },
+  pressed: {
+    opacity: 0.6,
+  },
+  sendButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 10,
+    backgroundColor: COLORS.primary,
+  },
+  sendButtonDisabled: {
+    backgroundColor: COLORS.offline,
+  },
+  sendText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  shareWrapper: {
+    marginTop: 12,
+    alignItems: 'center',
+  },
+  tagSelected: {
+    backgroundColor: COLORS.primary,
+  },
+  tagTextSelected: {
     color: '#FFFFFF',
   },
 });
