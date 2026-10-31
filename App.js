@@ -13,6 +13,8 @@ import {
   Alert,
 } from 'react-native';
 
+import { useState } from 'react';
+
 const COLORS = {
   background: '#EEF1F6',
   card: '#FFFFFF',
@@ -38,17 +40,9 @@ function formatCount(n) {
 }
 
 export default function App() {
-  // STEP 3: followers must grow by 1 while you are following
-  const followers = BASE_FOLLOWERS;
-  const stats = [
-    { label: 'Projects', value: '24' },
-    { label: 'Followers', value: formatCount(followers) },
-    { label: 'Following', value: '180' },
-  ];
-
   // TODO STEP 1: write the event handlers (handleFollowPress, handleMessagePress, handleSharePress)
   const handleFollowPress = () => {
-    Alert.alert('Follow', 'Presionaste el botón de Follow');
+    setIsFollowing(!isFollowing);
   };
 
   const handleMessagePress = () => {
@@ -60,6 +54,16 @@ export default function App() {
   };
 
   // TODO STEP 3: add the state for follow / unfollow (useState)
+  const [isFollowing, setIsFollowing] = useState(false);
+
+  // STEP 3: followers must grow by 1 while you are following
+  const followers = BASE_FOLLOWERS + (isFollowing ? 1 : 0);
+  const stats = [
+    { label: 'Projects', value: '24' },
+    { label: 'Followers', value: formatCount(followers) },
+    { label: 'Following', value: '180' },
+  ];
+
   // TODO STEP 4: add the state for the message composer
   // TODO STEP 5: add the state for the bio, the online status and the selected skills
 
@@ -130,11 +134,17 @@ export default function App() {
                 styles.button,
                 styles.buttonPrimary,
                 pressed && styles.pressed,
+                isFollowing && styles.buttonFollowing,
               ]}
               onPress={handleFollowPress}
             >
-              <Text style={[styles.buttonText, styles.buttonTextPrimary]}>
-                Follow
+              <Text
+                style={[
+                  styles.buttonText,
+                  !isFollowing && styles.buttonTextPrimary,
+                ]}
+              >
+                {isFollowing ? `Following` : `Follow`}
               </Text>
             </Pressable>
             <Pressable
