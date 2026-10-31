@@ -11,6 +11,7 @@ import {
   Pressable,
   Button,
   Alert,
+  TextInput,
 } from 'react-native';
 
 import { useState } from 'react';
@@ -32,7 +33,9 @@ const BIO =
 
 const SKILLS = ['React Native', 'JavaScript', 'UI Design', 'Git', 'Flexbox'];
 const BASE_FOLLOWERS = 1200;
+
 // TODO STEP 4: const MAX_MESSAGE = 140;
+const MAX_MESSAGE = 140;
 
 // Adds thousands separators: 1200 -> '1,200'
 function formatCount(n) {
@@ -46,7 +49,13 @@ export default function App() {
   };
 
   const handleMessagePress = () => {
-    Alert.alert('Message', 'Presionaste el botón de Message');
+    setIsComposerOpen(!isComposerOpen);
+  };
+
+  const handleSendPress = () => {
+    Alert.alert('Send Button', 'Presionaste el botón de Send Button');
+    setMessage('');
+    setIsComposerOpen(false);
   };
 
   const handleSharePress = () => {
@@ -65,6 +74,11 @@ export default function App() {
   ];
 
   // TODO STEP 4: add the state for the message composer
+  const [isComposerOpen, setIsComposerOpen] = useState(false);
+  const [message, setMessage] = useState('');
+
+  const isSendDisabled = message.trim().length === 0;
+
   // TODO STEP 5: add the state for the bio, the online status and the selected skills
 
   return (
@@ -154,11 +168,41 @@ export default function App() {
               ]}
               onPress={handleMessagePress}
             >
-              <Text style={styles.buttonText}>Message</Text>
+              <Text style={styles.buttonText}>
+                {isComposerOpen ? `Close` : `Message`}
+              </Text>
             </Pressable>
           </View>
 
           {/* TODO STEP 4: when 'Message' is pressed, show a composer here (TextInput + counter + Send) */}
+          {isComposerOpen && (
+            <View style={[styles.composer]}>
+              <TextInput
+                value={message}
+                onChangeText={(newText) => setMessage(newText)}
+                maxLength={MAX_MESSAGE}
+                placeholder='Example'
+                placeholderTextColor={COLORS.muted}
+                style={styles.input}
+              ></TextInput>
+              <View style={styles.composerFooter}>
+                <Text style={styles.counter}>
+                  {message.length}/{MAX_MESSAGE} characters
+                </Text>
+                <Pressable
+                  disabled={isSendDisabled}
+                  onPress={handleSendPress}
+                  style={({ pressed }) => [
+                    styles.sendButton,
+                    isSendDisabled && styles.sendButtonDisabled,
+                    pressed && styles.pressed,
+                  ]}
+                >
+                  <Text style={styles.sendText}>Send</Text>
+                </Pressable>
+              </View>
+            </View>
+          )}
 
           {/* TODO STEP 1: add a 'Share profile' Button (core component) here */}
           <View style={styles.shareWrapper}>
