@@ -42,10 +42,37 @@ function formatCount(n) {
   return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
+// BONUS: extract Tag component
+function Tag({ label, selected, onPress }) {
+  return (
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.tag,
+        selected && styles.tagSelected,
+        pressed && styles.pressed,
+      ]}
+    >
+      <Text style={[styles.tagText, selected && styles.tagTextSelected]}>
+        {label}
+      </Text>
+    </Pressable>
+  );
+}
+
 export default function App() {
+  // BONUS
+  const [isBusy, setIsBusy] = useState(false);
+
   // TODO STEP 1: write the event handlers (handleFollowPress, handleMessagePress, handleSharePress)
+  // BONUS: Disable the Follow button, show an error message
   const handleFollowPress = () => {
     setIsFollowing(!isFollowing);
+    setIsBusy(true);
+
+    setTimeout(() => {
+      setIsBusy(false);
+    }, 2000);
   };
 
   const handleMessagePress = () => {
@@ -163,30 +190,14 @@ export default function App() {
 
           {/* TODO STEP 5: make the skills selectable (Pressable + array state) */}
           <View style={styles.tags}>
-            {SKILLS.map((skill) => {
-              const isSelected = selectedSkills.includes(skill);
-
-              return (
-                <Pressable
-                  key={skill}
-                  onPress={() => handleSkillPress(skill)}
-                  style={({ pressed }) => [
-                    styles.tag,
-                    isSelected && styles.tagSelected,
-                    pressed && styles.pressed,
-                  ]}
-                >
-                  <Text
-                    style={[
-                      styles.tagText,
-                      isSelected && styles.tagTextSelected,
-                    ]}
-                  >
-                    {skill}
-                  </Text>
-                </Pressable>
-              );
-            })}
+            {SKILLS.map((skill) => (
+              <Tag
+                key={skill}
+                label={skill}
+                selected={selectedSkills.includes(skill)}
+                onPress={() => handleSkillPress(skill)}
+              />
+            ))}
           </View>
 
           <Text style={styles.hint}>
@@ -205,6 +216,7 @@ export default function App() {
                 isFollowing && styles.buttonFollowing,
               ]}
               onPress={handleFollowPress}
+              disabled={isBusy}
             >
               <Text
                 style={[
@@ -239,6 +251,9 @@ export default function App() {
                 placeholderTextColor={COLORS.muted}
                 style={styles.input}
               ></TextInput>
+              {message.length === MAX_MESSAGE && (
+                <Text style={styles.error}>Maximum length reached</Text>
+              )}
               <View style={styles.composerFooter}>
                 <Text style={styles.counter}>
                   {message.length}/{MAX_MESSAGE} characters
@@ -433,6 +448,10 @@ const styles = StyleSheet.create({
   },
   composer: {
     marginTop: 16,
+  },
+  error: {
+    marginTop: 8,
+    color: 'red',
   },
   composerFooter: {
     flexDirection: 'row',
