@@ -63,6 +63,7 @@ function Tag({ label, selected, onPress }) {
 export default function App() {
   // BONUS
   const [isBusy, setIsBusy] = useState(false);
+  const [showError, setShowError] = useState(false);
 
   // TODO STEP 1: write the event handlers (handleFollowPress, handleMessagePress, handleSharePress)
   // BONUS: Disable the Follow button, show an error message
@@ -80,6 +81,12 @@ export default function App() {
   };
 
   const handleSendPress = () => {
+    if (message.length === MAX_MESSAGE) {
+      setShowError(true);
+      return;
+    }
+
+    setShowError(false);
     Alert.alert('Message sent', message);
     setMessage('');
     setIsComposerOpen(false);
@@ -245,13 +252,18 @@ export default function App() {
             <View style={[styles.composer]}>
               <TextInput
                 value={message}
-                onChangeText={(newText) => setMessage(newText)}
+                onChangeText={(newText) => {
+                  setMessage(newText);
+                  if (newText.length < MAX_MESSAGE) {
+                    setShowError(false);
+                  }
+                }}
                 maxLength={MAX_MESSAGE}
                 placeholder='Write a message'
                 placeholderTextColor={COLORS.muted}
                 style={styles.input}
               ></TextInput>
-              {message.length === MAX_MESSAGE && (
+              {showError && (
                 <Text style={styles.error}>Maximum length reached</Text>
               )}
               <View style={styles.composerFooter}>
